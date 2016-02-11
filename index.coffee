@@ -6,22 +6,23 @@ qs = require 'querystring'
 OAuth2 = require('oauth').OAuth2
 _ = require 'underscore'
 querystring = require 'querystring'
+redis = require "redis"
 
 [apiUrl, baseUrl] = ['https://api.github.com', 'https://710a72a7.ngrok.com']
 
 # To modify hook path, modify jade file too
-[redirectPath, registerPath, listenPath, hookPath] = ['/oauth', '/register', '/listen', '/hook']
+[redirectPath, registerPath, listenPath, hookPath, viewPath] = ['/oauth', '/register', '/listen', '/hook', '/log']
 [clientID, clientSecret] = ['c63286947a4872bbbe3b', 'b685dd56a2e5b6302d019c5256b0898f7ebfc472']
+listenSecret = 'notreallyasecret'
 
 app = express()
 app.use bodyParser.json() # for parsing application/json
 app.use bodyParser.urlencoded(extended: true) # for parsing application/x-www-form-urlencoded
 app.use express.static(__dirname + '/public')
-
-listenSecret = 'notreallyasecret'
-
 app.set 'view engine', 'jade'
-users = {} # Maps ID's to users to store server state
+
+users = {} # Maps ID's to users to store server state in ram
+rclient = redis.createClient()
 
 # configure Oauth2 object
 oauth2 = new OAuth2(clientID, clientSecret, 'https://github.com/', 'login/oauth/authorize', 'login/oauth/access_token', null)
@@ -48,6 +49,15 @@ app.get redirectPath, (req, res) ->
           repos: repos
           userid: userid
 
+app.get viewPath, (req, res) ->
+  allCommits = []
+  rclient.lrange 'pushes', 0, 100, (err, pushes) ->
+    for push in pushes
+      push = JSON.parse push
+      for commit in push.commits then allCommits.push commit:commit, repo:push.repo
+    console.log allCommits
+    res.render 'log.jade', commits: allCommits
+
 app.get hookPath, (req, res) ->
   [userid, hookUrl] = [req.query.id, req.query.url]
   if !userid or !hookUrl or !users[userid] then return res.redirect(registerPath)
@@ -59,12 +69,15 @@ app.get hookPath, (req, res) ->
 app.post listenPath, (req, res) ->
   payload = JSON.parse req.body.payload
   repo = payload.repository
+  if !payload.commits or !repo then return console.log "non push hook"
+  rclient.lpush "pushes", JSON.stringify({commits:payload.commits, repo:repo})
   commits = payload.commits
-  for commit in commits
-    console.log "At #{commit.timestamp}, #{commit.committer.name} committed \"#{commit.message}\" to \"#{repo.name}\""
+  for commit in commits then console.log formatCommit(commit, repo)
   res.status(200).send({})
 
 app.listen 8080, -> console.log 'Listening on 8080'
+
+formatCommit = (commit, repo) -> "At #{commit.timestamp}, #{commit.committer.username} committed \"#{commit.message}\" to \"#{repo.name}\""
 
 oauth_headers = (userid) -> {
   'Authorization': 'token ' + users[userid]['token']

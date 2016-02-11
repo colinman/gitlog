@@ -1,0 +1,19 @@
+html
+  head
+    title Treehacks Commit Log
+  body
+  - each c in commits
+    |At&nbsp;
+    span
+      = c.commit.timestamp
+    |&nbsp;
+    span
+      = c.commit.committer.username
+    |&nbsp;committed "
+    span
+      = c.commit.message
+    |" to "
+    span
+      = c.repo.name
+    |"
+    br
