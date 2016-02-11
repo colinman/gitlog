@@ -1,0 +1,8 @@
+html
+  head
+    title Treehacks Commit Log
+  body
+  - each repo in repos
+    a(href="/hook?id=" + userid + "&url=" + encodeURIComponent(repo.hooks_url))
+      = repo.name
+    br
