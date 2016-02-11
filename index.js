@@ -78,7 +78,7 @@ app.get(registerPath, function(req, res) {
   writeBody(res, '<a href="' + getAccessTokenURL() + '"> Get Code </a>');
 });
 
-app.get(redirectPath + "", function(req, res) {
+app.get(redirectPath, function(req, res) {
   oauth2.getOAuthAccessToken(
     req.query.code, {'redirect_uri': redirectURL},
     function (e, access_token, refresh_token, results){
