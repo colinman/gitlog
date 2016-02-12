@@ -58,14 +58,14 @@ app.get viewPath, (req, res) ->
     res.render 'log.jade', commits: allCommits
 
 app.get hookPath, (req, res) ->
-  [userid, hookUrl] = [req.query.id, req.query.url]
-  if !userid or !hookUrl or !users[userid] then return res.redirect(registerPath)
+  [userid, hookUrl, reponame] = [req.query.id, req.query.url, req.query.reponame]
+  if !userid or !hookUrl or !reponame or !users[userid] then return res.redirect(registerPath)
   user = users[userid]
   writeHook userid, hookUrl, (err) ->
     if err then return writeBody res, 'An error occurred. Please try again.'
     else
       delete users[userid]
-      res.render 'hook.jade', repoName: "test"
+      res.render 'hook.jade', repoName: reponame
 
 app.post listenPath, (req, res) ->
   payload = JSON.parse req.body.payload
