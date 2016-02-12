@@ -8,7 +8,7 @@ _ = require 'underscore'
 querystring = require 'querystring'
 redis = require "redis"
 
-[apiUrl, baseUrl] = ['https://api.github.com', 'https://710a72a7.ngrok.com']
+[apiUrl, baseUrl] = ['https://api.github.com', 'http://104.236.191.42/']
 
 # To modify hook path, modify jade file too
 [redirectPath, registerPath, listenPath, hookPath, viewPath] = ['/oauth', '/register', '/listen', '/hook', '/log']
@@ -74,7 +74,9 @@ app.post listenPath, (req, res) ->
   commits = payload.commits
   res.status(200).send({})
 
-app.listen 8080, -> console.log 'Listening on 8080'
+app.get '*', (req, res) -> res.redirect '/register'
+
+app.listen 80, -> console.log 'Listening on 80'
 
 oauth_headers = (userid) -> {
   'Authorization': 'token ' + users[userid]['token']
