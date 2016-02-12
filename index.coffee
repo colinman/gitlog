@@ -54,7 +54,6 @@ app.get viewPath, (req, res) ->
     for push in pushes
       push = JSON.parse push
       for commit in push.commits then allCommits.push commit:commit, repo:push.repo
-    console.log allCommits
     res.render 'log.jade', commits: allCommits
 
 app.get hookPath, (req, res) ->
@@ -70,15 +69,12 @@ app.get hookPath, (req, res) ->
 app.post listenPath, (req, res) ->
   payload = JSON.parse req.body.payload
   repo = payload.repository
-  if !payload.commits or !repo then return console.log "non push hook"
+  if !payload.commits or !repo then return console.log "Registration"
   rclient.lpush "pushes", JSON.stringify({commits:payload.commits, repo:repo})
   commits = payload.commits
-  for commit in commits then console.log formatCommit(commit, repo)
   res.status(200).send({})
 
 app.listen 8080, -> console.log 'Listening on 8080'
-
-formatCommit = (commit, repo) -> "At #{commit.timestamp}, #{commit.committer.username} committed \"#{commit.message}\" to \"#{repo.name}\""
 
 oauth_headers = (userid) -> {
   'Authorization': 'token ' + users[userid]['token']
@@ -110,7 +106,7 @@ getRepos = (userid, cb) ->
   }, (error, response, body) ->
     # note: response is of type IncomingMessage
     if error then console.log 'Error:', error
-    else if response.statusCode != 200 then console.log 'Error code:', response.statusCode
+    else if !response.statusCode.toString().startsWith('2') then console.log 'Error code:', response.statusCode
     cb JSON.parse(body)
 
 writeHook = (userid, hookUrl, cb) ->
@@ -127,7 +123,7 @@ writeHook = (userid, hookUrl, cb) ->
     )
   }, (error, response, body) ->
     if error then console.log 'Error:', error
-    else if response.statusCode != 200
+    else if !response.statusCode.toString().startsWith('2')
       console.log 'Error code:', response.statusCode
       console.log 'Error:', body
     cb()
