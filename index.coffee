@@ -8,7 +8,7 @@ _ = require 'underscore'
 querystring = require 'querystring'
 redis = require "redis"
 
-[apiUrl, baseUrl] = ['https://api.github.com', 'http://104.236.191.42/']
+[apiUrl, baseUrl] = ['https://api.github.com', 'http://gitlog.treehacks.com']
 
 # To modify hook path, modify jade file too
 [redirectPath, registerPath, listenPath, hookPath, viewPath] = ['/oauth', '/register', '/listen', '/hook', '/log']
