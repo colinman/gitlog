@@ -1,8 +1,12 @@
-html
-  head
-    title Treehacks Commit Log
-  body
-  - each repo in repos
-    a(href="/hook?id=" + userid + "&url=" + encodeURIComponent(repo.hooks_url))
-      = repo.name
-    br
+extends ./master.jade
+
+block head
+  title Treehacks Commit Log - Choose Repo
+
+block card
+  .mdl-card__supporting-text
+    | Choose a Repository that you would like to hook to our log.
+  .mdl-card__actions.mdl-card--border
+    - each repo in repos
+      a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="/hook?id=" + userid + "&url=" + encodeURIComponent(repo.hooks_url))
+        = repo.name

@@ -1,0 +1,49 @@
+body {
+    font-family: Avenir;
+}
+.demo-card-wide.mdl-card {
+    width: 512px;
+    margin: 50px auto 0px auto;
+}
+.demo-card-wide > .mdl-card__title 
+{
+    color: #fff;
+    height: 176px;
+    background-color: rgb(255, 92, 76);
+}
+.demo-card-wide > .mdl-card__menu {
+    color: #fff;
+}
+#bottom {
+    background-color: rgb(255, 92, 76); !important    
+}
+.highlight {
+    color:  rgb(255, 92, 76);
+}
+
+#log {
+    width: 800px;
+}
+#commits {
+    padding: 0px;
+    margin: 0px;
+}
+#committer {
+    clear: both;
+    float: left;
+    width: 100%;
+    height: auto;
+}
+#message {
+    clear: both;
+    float: left;
+    width: 100%;
+    height: auto;
+}
+#commititem {
+    height: auto;
+    padding: 10px 16px 10px 16px;
+}
+#commititem:not(:last-child) {
+    border-bottom: #EAEAEA 1px solid;
+}

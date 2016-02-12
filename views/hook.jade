@@ -1,8 +1,13 @@
-html
-  head
-    title Treehacks Commit Log
-    script.
-      var token = '#{token}'
-    script(src="scripts/hook.js")
-  body
-    span #{token}
+extends ./master.jade
+
+block head
+  title Treehacks Commit Log - Success!
+
+block card
+  .mdl-card__supporting-text
+    | Done! All your commits to 
+    span.highlight #{repoName}
+    |&nbsp;will now be shown in our log. If you'd like to disable this integration, go to 'Webhooks' under your repository's settings.
+  .mdl-card__actions.mdl-card--border
+    a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="http://www.treehacks.com")
+      | Back to TreeHacks.com

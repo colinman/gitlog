@@ -1,19 +1,35 @@
 html
   head
+    link(rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css")
+    link(rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons")
+    link(rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.deep_orange-red.min.css")
+    link(rel="stylesheet" href="/styles/style.css")
     title Treehacks Commit Log
   body
-  - each c in commits
-    |At&nbsp;
-    span
-      = c.commit.timestamp
-    |&nbsp;
-    span
-      = c.commit.committer.username
-    |&nbsp;committed "
-    span
-      = c.commit.message
-    |" to "
-    span
-      = c.repo.name
-    |"
-    br
+    .demo-card-wide.mdl-card.mdl-shadow--2dp#log
+      .mdl-card__title
+        h2.mdl-card__title-text Treehacks Commit Log
+      ul#commits.demo-list-three.mdl-list
+        - each c in commits
+          li#commititem.mdl-list__item.mdl-list__item--three-line
+            .commit
+              #committer.mdl-list__item-primary-content
+                = c.commit.committer.username
+                | @ 
+                = c.repo.name
+              #message.mdl-list__item-text-body
+                = c.commit.message
+        //-   = c.commit.timestamp
+        //- |&nbsp;
+        //- span
+        //-   = c.commit.committer.username
+        //- |&nbsp;committed "
+        //- span
+        //-   = c.commit.message
+        //- |" to "
+        //- span
+        //-   = c.repo.name
+        //- |"
+        //- br
+      block card
+      a#bottom.mdl-button.mdl-js-button.mdl-button--raised.mdl-button--accent

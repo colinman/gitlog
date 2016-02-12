@@ -27,8 +27,7 @@ rclient = redis.createClient()
 # configure Oauth2 object
 oauth2 = new OAuth2(clientID, clientSecret, 'https://github.com/', 'login/oauth/authorize', 'login/oauth/access_token', null)
 
-app.get registerPath, (req, res) ->
-  writeBody res, '<a href="' + getAccessTokenURL() + '"> Get Code </a>'
+app.get registerPath, (req, res) -> res.render 'register.jade', registerURL: getAccessTokenURL()
 
 app.get redirectPath, (req, res) ->
   oauth2.getOAuthAccessToken req.query.code, {'redirect_uri': baseUrl + redirectPath},
@@ -63,8 +62,10 @@ app.get hookPath, (req, res) ->
   if !userid or !hookUrl or !users[userid] then return res.redirect(registerPath)
   user = users[userid]
   writeHook userid, hookUrl, (err) ->
-    if err then writeBody res, 'An error occurred. Please try again.'
-    else res.render 'hook.jade', token: user.token
+    if err then return writeBody res, 'An error occurred. Please try again.'
+    else
+      delete users[userid]
+      res.render 'hook.jade', repoName: "test"
 
 app.post listenPath, (req, res) ->
   payload = JSON.parse req.body.payload
