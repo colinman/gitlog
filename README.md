@@ -12,5 +12,8 @@ Install Node Packages
 npm install
 npm install -g coffee-script
 
+IMPORTANT: Make sure to change 'baseUrl' in index.coffee to match host name
+
+Run
 --
 ./run.sh
