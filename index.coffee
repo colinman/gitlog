@@ -108,7 +108,7 @@ getRepos = (userid, cb) ->
   }, (error, response, body) ->
     # note: response is of type IncomingMessage
     if error then console.log 'Error:', error
-    else if !response.statusCode.toString().startsWith('2') then console.log 'Error code:', response.statusCode
+    else if !response.statusCode != 200 then console.log 'Error code:', response.statusCode
     cb JSON.parse(body)
 
 writeHook = (userid, hookUrl, cb) ->
@@ -125,7 +125,7 @@ writeHook = (userid, hookUrl, cb) ->
     )
   }, (error, response, body) ->
     if error then console.log 'Error:', error
-    else if !response.statusCode.toString().startsWith('2')
+    else if !response.statusCode != 201
       console.log 'Error code:', response.statusCode
       console.log 'Error:', body
     cb()
